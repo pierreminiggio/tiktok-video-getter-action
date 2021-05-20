@@ -2,9 +2,9 @@ on:
   workflow_dispatch:
     inputs:
       likes:
-        description: "Likes"
+        description: "username"
         required: true
-        default: "JSON d'objets Like"
+        default: "pierreminiggio"
 name: Get videos
 jobs:
   get:
@@ -25,4 +25,4 @@ jobs:
       - run: echo $WORKFLOW_INPUT
       - run: pip install TikTokApi
       - run: python -m playwright install
-      - run: echo "from TikTokApi import TikTokApi; import json;  api = TikTokApi(); n_videos = 20; username = 'pierreminiggio3'; user_videos = api.byUsername(username, count=n_videos); print(json.dumps(user_videos))" | python
+      - run: echo "from TikTokApi import TikTokApi; import json;  api = TikTokApi(); n_videos = 20; username = 'pierreminiggio'; user_videos = api.byUsername(username, count=n_videos); print(json.dumps(user_videos))" | python
