@@ -24,6 +24,10 @@ jobs:
           username: ${{ github.event.inputs.username }}
       - run: pip install TikTokApi
       - run: python -m playwright install
-      - run: echo "from TikTokApi import TikTokApi; import json;  api = TikTokApi(); n_videos = 20; username = '$username'; user_videos = api.byUsername(username, count=n_videos); print(json.dumps(user_videos))" | python
+      - run: echo "from TikTokApi import TikTokApi; import json;  api = TikTokApi(); n_videos = 20; username = '$username'; user_videos = api.byUsername(username, count=n_videos); print(json.dumps(user_videos))" | python > videos.json
         env:
           username: ${{ github.event.inputs.username }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: videos.json
+          path: videos.json
