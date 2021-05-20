@@ -1,0 +1,27 @@
+on:
+  workflow_dispatch:
+    inputs:
+      likes:
+        description: "Likes"
+        required: true
+        default: "JSON d'objets Like"
+name: Render video
+jobs:
+  get:
+    name: Get videos
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # in this example, there is a newer version already installed, 3.7.7, so the older version will be downloaded
+        python-version: ['3.5', '3.6', '3.7.4', '3.8']
+    steps:
+      - uses: actions/checkout@main
+      - uses: actions/setup-python@v2
+      - run: sudo apt update
+      - run: echo $WORKFLOW_INPUT
+        env:
+          WORKFLOW_INPUT: ${{ toJson(github.event.inputs) }}
+      - run: echo $WORKFLOW_INPUT
+      - run: pip install TikTokApi
+      - run: python -m playwright install
+      - run: echo "from TikTokApi import TikTokApi; import json;  api = TikTokApi(); n_videos = 20; username = 'pierreminiggio3'; user_videos = api.byUsername(username, count=n_videos); print(json.dumps(user_videos))" | python
