@@ -5,7 +5,7 @@ on:
         description: "Likes"
         required: true
         default: "JSON d'objets Like"
-name: Render video
+name: Get videos
 jobs:
   get:
     name: Get videos
