@@ -15,7 +15,7 @@ api = TikTokApi()
 numberOfVideos = int(args[2]) if argsLength == 3 else defaultVideoNumber
 username = args[1]
 try:
-    user_videos = api.byUsername(username, count=numberOfVideos)
+    videos = api.byUsername(username, count=numberOfVideos)
 except exceptions.TikTokNotFoundError:
     print(json.dumps({'message': 'User not found'}))
     sys.exit()
@@ -23,4 +23,4 @@ except:
    print(json.dumps({'message': 'Unknown error'}))
    sys.exit()
 
-print(json.dumps(user_videos))
+print(json.dumps(videos))
