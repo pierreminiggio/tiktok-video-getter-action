@@ -5,6 +5,10 @@ on:
         description: "TikTok Username"
         required: true
         default: "pierreminiggio"
+      numberOfVideos:
+        description: "Number of videos to get"
+        required: true
+        default: "20"
 name: Get videos
 jobs:
   get:
@@ -12,21 +16,22 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        # in this example, there is a newer version already installed, 3.7.7, so the older version will be downloaded
         python-version: ['3.8']
     steps:
       - uses: actions/checkout@main
       - uses: actions/setup-python@v2
       - run: sudo apt update
       - run: sudo apt-get install libegl1 libopus0 libwoff1 libharfbuzz-icu0 gstreamer1.0-plugins-base libgstreamer-gl1.0-0 gstreamer1.0-plugins-bad libopenjp2-7 libwebpdemux2 libenchant1c2a libhyphen0 libgles2 gstreamer1.0-libav
-      - run: echo $username
+      - run: echo $username; echo $numberOfVideos
         env:
           username: ${{ github.event.inputs.username }}
+          numberOfVideos: ${{ github.event.inputs.numberOfVideos }}
       - run: pip install TikTokApi
       - run: python -m playwright install
-      - run: echo "from TikTokApi import TikTokApi; import json;  api = TikTokApi(); n_videos = 20; username = '$username'; user_videos = api.byUsername(username, count=n_videos); print(json.dumps(user_videos))" | python > videos.json
+      - run: python main.py $username $numberOfVideos > videos.json
         env:
           username: ${{ github.event.inputs.username }}
+          numberOfVideos: ${{ github.event.inputs.numberOfVideos }}
       - uses: actions/upload-artifact@v2
         with:
           name: videos.json
