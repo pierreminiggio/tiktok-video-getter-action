@@ -1,6 +1,7 @@
-from TikTokApi import TikTokApi, exceptions
+from fp.fp import FreeProxy
 import json
 import sys
+from TikTokApi import TikTokApi, exceptions
 
 args = sys.argv
 argsLength = len(args)
@@ -14,8 +15,14 @@ if argsLength != 2 and argsLength != 3:
 api = TikTokApi()
 numberOfVideos = int(args[2]) if argsLength == 3 else defaultVideoNumber
 username = args[1]
+
 try:
-    videos = api.by_username(username, count=numberOfVideos)
+    proxy = FreeProxy().get()
+except Exception as e:
+    print(json.dumps({'message': 'Error while finding a proxy : ' + str(e)}))
+    sys.exit()
+try:
+    videos = api.by_username(username, count=numberOfVideos, proxy=proxy)
 except exceptions.TikTokCaptchaError:
     print(json.dumps({'message': 'TikTok blocked the request using a Captcha'}))
     sys.exit()
