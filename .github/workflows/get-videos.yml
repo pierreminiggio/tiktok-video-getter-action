@@ -26,6 +26,7 @@ jobs:
         env:
           username: ${{ github.event.inputs.username }}
           numberOfVideos: ${{ github.event.inputs.numberOfVideos }}
+      - run: pip install wheel
       - run: pip install TikTokApi
       - run: python -m playwright install
       - run: python main.py $username $numberOfVideos > videos.json
