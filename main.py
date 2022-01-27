@@ -16,7 +16,7 @@ numberOfVideos = int(args[2]) if argsLength == 3 else defaultVideoNumber
 username = args[1]
 try:
     videos = api.by_username(username, count=numberOfVideos)
-expect exceptions.TikTokCaptchaError:
+except exceptions.TikTokCaptchaError:
     rint(json.dumps({'message': 'TikTok blocked the request using a Captcha'}))
     sys.exit()
 except exceptions.TikTokNotFoundError:
