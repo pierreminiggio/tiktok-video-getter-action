@@ -20,7 +20,7 @@ except exceptions.TikTokNotFoundError:
     print(json.dumps({'message': 'User not found'}))
     sys.exit()
 except Exception as e:
-   print(json.dumps({'message': str(e)}))
-   sys.exit()
+    print(json.dumps({'message': str(e)}))
+    sys.exit()
 
 print(json.dumps(videos))
