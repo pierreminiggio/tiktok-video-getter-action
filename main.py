@@ -17,7 +17,7 @@ numberOfVideos = int(args[2]) if argsLength == 3 else defaultVideoNumber
 username = args[1]
 
 try:
-    proxy = FreeProxy().get()
+    proxy = FreeProxy(https=True).get()
 except Exception as e:
     print(json.dumps({'message': 'Error while finding a proxy : ' + str(e)}))
     sys.exit()
