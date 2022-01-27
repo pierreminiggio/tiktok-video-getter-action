@@ -16,21 +16,29 @@ api = TikTokApi()
 numberOfVideos = int(args[2]) if argsLength == 3 else defaultVideoNumber
 username = args[1]
 
-try:
-    proxy = FreeProxy(https=True).get()
-except Exception as e:
-    print(json.dumps({'message': 'Error while finding a proxy : ' + str(e)}))
-    sys.exit()
-try:
-    videos = api.by_username(username, count=numberOfVideos, proxy=proxy)
-except exceptions.TikTokCaptchaError:
-    print(json.dumps({'message': 'TikTok blocked the request using a Captcha'}))
-    sys.exit()
-except exceptions.TikTokNotFoundError:
-    print(json.dumps({'message': 'User not found'}))
-    sys.exit()
-except Exception as e:
-    print(json.dumps({'message': str(e)}))
-    sys.exit()
+def getVideos(useProxy = False): 
+    proxy = None
+    
+    if useProxy: 
+        try:
+            proxy = FreeProxy(https=True).get()
+        except Exception as e:
+            print(json.dumps({'message': 'Error while finding a proxy : ' + str(e)}))
+            sys.exit()
+    try:
+        videos = api.by_username(username, count=numberOfVideos, proxy=proxy)
+    except exceptions.TikTokCaptchaError:
+        if useProxy:
+            print(json.dumps({'message': 'TikTok blocked the request using a Captcha'}))
+            sys.exit()
+        getVideos(True)
+    except exceptions.TikTokNotFoundError:
+        print(json.dumps({'message': 'User not found'}))
+        sys.exit()
+    except Exception as e:
+        print(json.dumps({'message': str(e)}))
+        sys.exit()
 
-print(json.dumps(videos))
+    print(json.dumps(videos))
+
+getVideos()
