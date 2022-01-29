@@ -1,6 +1,6 @@
 import requests
 
-def get_proxy(proxy_protocol = 'https', countries = 'be,de,es,fi,fr,ie,it,lu,pt,uk,se', excluded_proxies = []):
+def get_proxy(proxy_protocol = 'https', countries = 'fr', excluded_proxies = []):
     proxies_request = requests.get('https://api.proxyscrape.com/?request=getproxies&proxytype=' + proxy_protocol + '&timeout=10000&country=' + countries)
     if proxies_request.status_code != 200:
         raise Exception('Couldn\'t get proxy list : Bad HTTP code')
