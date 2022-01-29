@@ -1,7 +1,7 @@
 from enum import Enum
 from fp.fp import FreeProxy
 import json
-from proxyscrape import get_proxy
+from proxyscrape.get_proxy import get_proxy
 import sys
 from TikTokApi import TikTokApi, exceptions
 
@@ -25,6 +25,9 @@ class ProxyStrategy(Enum):
 
 lastProxyStrategyIndex = ProxyStrategy.PROXYSCRAPE.value
 
+numberOfProxyScrapeProxiesToTry = 3
+triedProxies = []
+
 def getVideos(proxyStrategy = ProxyStrategy.NONE.value): 
     proxy = None
     
@@ -37,25 +40,42 @@ def getVideos(proxyStrategy = ProxyStrategy.NONE.value):
 
     if proxyStrategy == ProxyStrategy.PROXYSCRAPE.value: 
         try:
-            proxy = get_proxy()
+            proxy = get_proxy(excluded_proxies=triedProxies)
         except Exception as e:
-            print(json.dumps({'message': 'Couldn\'t find a working Proxy'}))
+            print(json.dumps({'message': 'Couldn\'t find a working Proxy :' + str(e) }))
             sys.exit()
 
     try:
         videos = api.by_username(username, count=numberOfVideos, proxy=proxy)
     except exceptions.TikTokCaptchaError:
+        if (proxyStrategy == ProxyStrategy.PROXYSCRAPE.value):
+            if len(triedProxies) < numberOfProxyScrapeProxiesToTry:
+                triedProxies.append(proxy)
+                getVideos(ProxyStrategy.PROXYSCRAPE.value)
+                return
+
         if proxyStrategy == lastProxyStrategyIndex:
             print(json.dumps({'message': 'TikTok blocked the request using a Captcha'}))
             sys.exit()
+
         getVideos(proxyStrategy + 1)
         return
     except exceptions.TikTokNotFoundError:
         print(json.dumps({'message': 'User not found'}))
         sys.exit()
     except Exception as e:
-        print(json.dumps({'message': str(e)}))
-        sys.exit()
+        if (proxyStrategy == ProxyStrategy.PROXYSCRAPE.value):
+            if len(triedProxies) < numberOfProxyScrapeProxiesToTry:
+                triedProxies.append(proxy)
+                getVideos(ProxyStrategy.PROXYSCRAPE.value)
+                return
+
+        if proxyStrategy == lastProxyStrategyIndex:
+            print(json.dumps({'message': str(e)}))
+            sys.exit()
+
+        getVideos(proxyStrategy + 1)
+        return
 
     print(json.dumps(videos))
 
