@@ -23,19 +23,19 @@ class ProxyStrategy(Enum):
     FREE_PROXY = 1
     PROXYSCRAPE = 2
 
-lastProxyStrategyIndex = ProxyStrategy.PROXYSCRAPE
+lastProxyStrategyIndex = ProxyStrategy.PROXYSCRAPE.value
 
-def getVideos(proxyStrategy = ProxyStrategy.NONE): 
+def getVideos(proxyStrategy = ProxyStrategy.NONE.value): 
     proxy = None
     
-    if proxyStrategy == ProxyStrategy.FREE_PROXY: 
+    if proxyStrategy == ProxyStrategy.FREE_PROXY.value: 
         try:
             proxy = FreeProxy(https=True).get()
         except Exception as e:
-            getVideos(ProxyStrategy.PROXYSCRAPE)
+            getVideos(ProxyStrategy.PROXYSCRAPE.value)
             return
 
-    if proxyStrategy == ProxyStrategy.FREE_PROXY: 
+    if proxyStrategy == ProxyStrategy.FREE_PROXY.value: 
         try:
             proxy = get_proxy()
         except Exception as e:
