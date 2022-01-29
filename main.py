@@ -35,7 +35,7 @@ def getVideos(proxyStrategy = ProxyStrategy.NONE.value):
             getVideos(ProxyStrategy.PROXYSCRAPE.value)
             return
 
-    if proxyStrategy == ProxyStrategy.FREE_PROXY.value: 
+    if proxyStrategy == ProxyStrategy.PROXYSCRAPE.value: 
         try:
             proxy = get_proxy()
         except Exception as e:
