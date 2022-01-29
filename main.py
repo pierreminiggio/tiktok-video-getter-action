@@ -42,7 +42,7 @@ def getVideos(proxyStrategy = ProxyStrategy.NONE.value):
         try:
             proxy = get_proxy(excluded_proxies=triedProxies)
         except Exception as e:
-            print(json.dumps({'message': 'Couldn\'t find a working Proxy :' + str(e) }))
+            print(json.dumps({'message': 'Couldn\'t find a working Proxy : ' + str(e) }))
             sys.exit()
 
     try:
