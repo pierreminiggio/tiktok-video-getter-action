@@ -1,5 +1,7 @@
+from enum import Enum
 from fp.fp import FreeProxy
 import json
+from proxyscrape import get_proxy
 import sys
 from TikTokApi import TikTokApi, exceptions
 
@@ -16,22 +18,37 @@ api = TikTokApi()
 numberOfVideos = int(args[2]) if argsLength == 3 else defaultVideoNumber
 username = args[1]
 
-def getVideos(useProxy = False): 
+class ProxyStrategy(Enum):
+    NONE = 0
+    FREE_PROXY = 1
+    PROXYSCRAPE = 2
+
+lastProxyStrategyIndex = ProxyStrategy.PROXYSCRAPE
+
+def getVideos(proxyStrategy = ProxyStrategy.NONE): 
     proxy = None
     
-    if useProxy: 
+    if proxyStrategy == ProxyStrategy.FREE_PROXY: 
         try:
             proxy = FreeProxy(https=True).get()
         except Exception as e:
-            print(json.dumps({'message': 'Error while finding a proxy : ' + str(e)}))
+            getVideos(ProxyStrategy.PROXYSCRAPE)
+            return
+
+    if proxyStrategy == ProxyStrategy.FREE_PROXY: 
+        try:
+            proxy = get_proxy()
+        except Exception as e:
+            print(json.dumps({'message': 'Couldn\'t find a working Proxy'}))
             sys.exit()
+
     try:
         videos = api.by_username(username, count=numberOfVideos, proxy=proxy)
     except exceptions.TikTokCaptchaError:
-        if useProxy:
+        if proxyStrategy == lastProxyStrategyIndex:
             print(json.dumps({'message': 'TikTok blocked the request using a Captcha'}))
             sys.exit()
-        getVideos(True)
+        getVideos(proxyStrategy + 1)
     except exceptions.TikTokNotFoundError:
         print(json.dumps({'message': 'User not found'}))
         sys.exit()
