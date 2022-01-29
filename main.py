@@ -49,6 +49,7 @@ def getVideos(proxyStrategy = ProxyStrategy.NONE):
             print(json.dumps({'message': 'TikTok blocked the request using a Captcha'}))
             sys.exit()
         getVideos(proxyStrategy + 1)
+        return
     except exceptions.TikTokNotFoundError:
         print(json.dumps({'message': 'User not found'}))
         sys.exit()
