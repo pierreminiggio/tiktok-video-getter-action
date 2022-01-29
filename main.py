@@ -1,7 +1,7 @@
 from enum import Enum
 from fp.fp import FreeProxy
 import json
-from proxyscrape import get_proxy
+from proxyscrape.get_proxy import get_proxy
 import sys
 from TikTokApi import TikTokApi, exceptions
 
