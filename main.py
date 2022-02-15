@@ -79,4 +79,4 @@ def getVideos(proxyStrategy = ProxyStrategy.NONE.value):
 
     print(json.dumps(videos))
 
-getVideos(ProxyStrategy.FREE_PROXY.value)
+getVideos()
