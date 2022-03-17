@@ -30,7 +30,7 @@ jobs:
       - run: pip install wheel
       - run: pip install TikTokApi
       - run: python -m playwright install
-      - run: sudo playwright install-deps
+      - run: python -m playwright install-deps
       - run: python main.py $username $numberOfVideos > videos.json
         env:
           username: ${{ github.event.inputs.username }}
