@@ -14,7 +14,6 @@ if argsLength != 2 and argsLength != 3:
     print('use like this : python main.py [tiktokUsername] [numberofVideos=' + str(defaultVideoNumber) + ']')
     sys.exit()
 
-api = TikTokApi()
 numberOfVideos = int(args[2]) if argsLength == 3 else defaultVideoNumber
 username = args[1]
 
@@ -30,7 +29,7 @@ triedProxies = []
 
 def getVideos(proxyStrategy = ProxyStrategy.NONE.value): 
     proxy = None
-    
+
     if proxyStrategy == ProxyStrategy.FREE_PROXY.value: 
         try:
             proxy = FreeProxy(https=True).get()
@@ -45,9 +44,13 @@ def getVideos(proxyStrategy = ProxyStrategy.NONE.value):
             print(json.dumps({'message': 'Couldn\'t find a working Proxy : ' + str(e) }))
             sys.exit()
 
+    videos = []
     try:
-        videos = api.by_username(username, count=numberOfVideos, proxy=proxy)
-    except exceptions.TikTokCaptchaError:
+        with TikTokApi(proxy=proxy) as api:
+            videosGenerator = api.user(username=username).videos(count=numberOfVideos)
+            for video in videosGenerator:
+                videos.append(video)
+    except exceptions.CaptchaException:
         if (proxyStrategy == ProxyStrategy.PROXYSCRAPE.value):
             if len(triedProxies) < numberOfProxyScrapeProxiesToTry:
                 triedProxies.append(proxy)
@@ -60,7 +63,7 @@ def getVideos(proxyStrategy = ProxyStrategy.NONE.value):
 
         getVideos(proxyStrategy + 1)
         return
-    except exceptions.TikTokNotFoundError:
+    except exceptions.NotFoundException:
         print(json.dumps({'message': 'User not found'}))
         sys.exit()
     except Exception as e:
