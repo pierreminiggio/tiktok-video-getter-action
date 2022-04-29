@@ -41,7 +41,7 @@ def getVideos(proxyStrategy = ProxyStrategy.NONE.value):
         try:
             proxy = get_proxy(excluded_proxies=triedProxies)
         except Exception as e:
-            print(json.dumps({'message': 'Je n\'ai pas trouvé de proxy qui fonctionne : ' + str(e) }))
+            print(json.dumps({'message': 'Couldn\'t find a working Proxy : ' + str(e) }))
             sys.exit()
 
     videos = []
@@ -58,13 +58,13 @@ def getVideos(proxyStrategy = ProxyStrategy.NONE.value):
                 return
 
         if proxyStrategy == lastProxyStrategyIndex:
-            print(json.dumps({'message': 'TikTok a bloqué la demande en utilisant un Captcha.'}))
+            print(json.dumps({'message': 'TikTok blocked the request using a Captcha'}))
             sys.exit()
 
         getVideos(proxyStrategy + 1)
         return
     except exceptions.NotFoundException:
-        print(json.dumps({'message': 'Utilisateur non trouvé'}))
+        print(json.dumps({'message': 'User not found'}))
         sys.exit()
     except Exception as e:
         if (proxyStrategy == ProxyStrategy.PROXYSCRAPE.value):

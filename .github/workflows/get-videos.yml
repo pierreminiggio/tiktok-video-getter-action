@@ -2,17 +2,17 @@ on:
   workflow_dispatch:
     inputs:
       username:
-        description: "Nom d'utilisateur TikTok"
+        description: "TikTok Username"
         required: true
         default: "pierreminiggio"
       numberOfVideos:
-        description: "Nombre de vidéos à obtenir"
+        description: "Number of videos to get"
         required: true
         default: "20"
-name: Obtenir des vidéos
+name: Get videos
 jobs:
   get:
-    name: Obtenir des vidéos
+    name: Get videos
     runs-on: ubuntu-latest
     strategy:
       matrix:
