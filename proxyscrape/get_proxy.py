@@ -3,12 +3,12 @@ import requests
 def get_proxy(proxy_protocol = 'https', countries = 'fr', excluded_proxies = []):
     proxies_request = requests.get('https://api.proxyscrape.com/?request=getproxies&proxytype=' + proxy_protocol + '&timeout=10000&country=' + countries)
     if proxies_request.status_code != 200:
-        raise Exception('Couldn\'t get proxy list : Bad HTTP code')
+        raise Exception('Impossible d\'obtenir la liste de proxy : Mauvais code HTTP')
 
     proxies_request_content = proxies_request.text
 
     if not proxies_request_content:
-        raise Exception('Couldn\'t get proxy list : Empty list')
+        raise Exception('Impossible d\'obtenir la liste de proxy : Liste vide')
 
     proxy_ips_to_try = proxies_request_content.splitlines()
 
@@ -33,4 +33,4 @@ def get_proxy(proxy_protocol = 'https', countries = 'fr', excluded_proxies = [])
         if trying_proxy_request.status_code == 200:
             return proxy_to_try
 
-    raise Exception('No working proxy at this time')
+    raise Exception('Pas de proxy fonctionnel pour le moment')
