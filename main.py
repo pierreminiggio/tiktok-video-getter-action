@@ -24,22 +24,29 @@ class ProxyStrategy(Enum):
 
 lastProxyStrategyIndex = ProxyStrategy.PROXYSCRAPE.value
 
+numberOfFreeProxyProxiesToTry = 3
+triedFreeProxyProxies = []
+
 numberOfProxyScrapeProxiesToTry = 3
-triedProxies = []
+triedProxyScrapeProxies = []
 
 def getVideos(proxyStrategy = ProxyStrategy.NONE.value): 
     proxy = None
 
     if proxyStrategy == ProxyStrategy.FREE_PROXY.value: 
         try:
-            proxy = FreeProxy(https=True).get()
+            proxy = FreeProxy(https=True, rand=True).get()
         except Exception as e:
+            if len(triedFreeProxyProxies) < numberOfFreeProxyProxiesToTry:
+                triedFreeProxyProxies.append(proxy)
+                getVideos(ProxyStrategy.FREE_PROXY.value)
+                return
             getVideos(ProxyStrategy.PROXYSCRAPE.value)
             return
 
     if proxyStrategy == ProxyStrategy.PROXYSCRAPE.value: 
         try:
-            proxy = get_proxy(excluded_proxies=triedProxies)
+            proxy = get_proxy(excluded_proxies=triedProxyScrapeProxies)
         except Exception as e:
             print(json.dumps({'message': 'Couldn\'t find a working Proxy : ' + str(e) }))
             sys.exit()
@@ -51,9 +58,15 @@ def getVideos(proxyStrategy = ProxyStrategy.NONE.value):
             for video in videosGenerator:
                 videos.append(video)
     except exceptions.CaptchaException:
+        if (proxyStrategy == ProxyStrategy.FREE_PROXY.value):
+            if len(triedFreeProxyProxies) < numberOfFreeProxyProxiesToTry:
+                triedFreeProxyProxies.append(proxy)
+                getVideos(ProxyStrategy.FREE_PROXY.value)
+                return
+        
         if (proxyStrategy == ProxyStrategy.PROXYSCRAPE.value):
-            if len(triedProxies) < numberOfProxyScrapeProxiesToTry:
-                triedProxies.append(proxy)
+            if len(triedProxyScrapeProxies) < numberOfProxyScrapeProxiesToTry:
+                triedProxyScrapeProxies.append(proxy)
                 getVideos(ProxyStrategy.PROXYSCRAPE.value)
                 return
 
@@ -67,9 +80,15 @@ def getVideos(proxyStrategy = ProxyStrategy.NONE.value):
         print(json.dumps({'message': 'User not found'}))
         sys.exit()
     except Exception as e:
+        if (proxyStrategy == ProxyStrategy.FREE_PROXY.value):
+            if len(triedFreeProxyProxies) < numberOfFreeProxyProxiesToTry:
+                triedFreeProxyProxies.append(proxy)
+                getVideos(ProxyStrategy.FREE_PROXY.value)
+                return
+        
         if (proxyStrategy == ProxyStrategy.PROXYSCRAPE.value):
-            if len(triedProxies) < numberOfProxyScrapeProxiesToTry:
-                triedProxies.append(proxy)
+            if len(triedProxyScrapeProxies) < numberOfProxyScrapeProxiesToTry:
+                triedProxyScrapeProxies.append(proxy)
                 getVideos(ProxyStrategy.PROXYSCRAPE.value)
                 return
 
