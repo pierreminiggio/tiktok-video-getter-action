@@ -35,7 +35,7 @@ jobs:
         env:
           username: ${{ github.event.inputs.username }}
           numberOfVideos: ${{ github.event.inputs.numberOfVideos }}
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: videos.json
           path: videos.json
